@@ -1,0 +1,95 @@
+/* Custom styles on top of Bootstrap */
+
+/* Language toggle button styling */
+.lang-toggle {
+    cursor: pointer;
+}
+
+/* Search bar styling */
+.search-container {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Phone card styling */
+.phone-card {
+    transition: transform 0.3s;
+    height: 100%;
+}
+
+.phone-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.phone-card .card-img-top {
+    height: 200px;
+    object-fit: contain;
+    padding: 15px;
+}
+
+/* Navbar brand styling */
+.navbar-brand {
+    font-weight: bold;
+}
+
+/* Content in Bengali */
+.bn-content {
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    line-height: 1.6;
+}
+
+/* Hide content based on language selection */
+.bn-content {
+    display: none;
+}
+
+.en-content {
+    display: block;
+}
+
+.lang-bn .bn-content {
+    display: block;
+}
+
+.lang-bn .en-content {
+    display: none;
+}
+
+/* Phone detail page */
+.phone-specs {
+    margin-bottom: 20px;
+}
+
+.specs-table th {
+    width: 140px;
+}
+
+/* Rating stars */
+.rating {
+    color: gold;
+}
+
+/* Price tag styling */
+.price-tag {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Placeholder for upcoming phones */
+.upcoming-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}

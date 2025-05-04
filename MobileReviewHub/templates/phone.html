@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ phone.title }} - Mobile Review</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts for Bengali -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <span class="en-content">Mobile Review Hub</span>
+                <span class="bn-content">মোবাইল রিভিউ হাব</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <span class="en-content">Home</span>
+                            <span class="bn-content">হোম</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <span class="en-content">Admin</span>
+                            <span class="bn-content">অ্যাডমিন</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <button id="langToggle" class="btn btn-outline-light ms-lg-2 lang-toggle">
+                            বাংলা
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="/">
+                        <span class="en-content">Home</span>
+                        <span class="bn-content">হোম</span>
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <span class="en-content">{{ phone.title }}</span>
+                    <span class="bn-content">{{ phone.title_bn or phone.title }}</span>
+                </li>
+            </ol>
+        </nav>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <article class="bg-dark p-4 rounded shadow mb-4">
+                    <header class="mb-4">
+                        {% if 'upcoming' in phone.file_path %}
+                        <div class="mb-2">
+                            <span class="badge bg-warning text-dark">
+                                <span class="en-content">Upcoming</span>
+                                <span class="bn-content">আসন্ন</span>
+                            </span>
+                        </div>
+                        {% endif %}
+                        
+                        <h1 class="en-title en-content">{{ phone.title }}</h1>
+                        <h1 class="bn-title bn-content">{{ phone.title_bn or phone.title }}</h1>
+                        
+                        <div class="mb-2">
+                            <span class="badge bg-secondary">
+                                <span class="en-content">{{ phone.brand }}</span>
+                                <span class="bn-content">{{ phone.brand_bn or phone.brand }}</span>
+                            </span>
+                            
+                            {% if phone.rating %}
+                            <span class="ms-2 rating">
+                                {% for i in range(phone.rating|int) %}
+                                <i class="fas fa-star"></i>
+                                {% endfor %}
+                                {% if (phone.rating|float % 1) >= 0.5 %}
+                                <i class="fas fa-star-half-alt"></i>
+                                {% endif %}
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="text-muted mb-2">
+                            <span class="en-content">Published on {{ phone.date }}</span>
+                            <span class="bn-content">প্রকাশিত হয়েছে {{ phone.date }}</span>
+                        </div>
+                    </header>
+                    
+                    {% if phone.image %}
+                    <figure class="text-center mb-4">
+                        <img src="{{ phone.image }}" alt="{{ phone.title }}" class="img-fluid rounded">
+                    </figure>
+                    {% endif %}
+                    
+                    <section class="phone-content mb-4">
+                        <h3 class="en-content">Overview</h3>
+                        <h3 class="bn-content">সংক্ষিপ্ত বিবরণ</h3>
+                        
+                        <div class="en-content">
+                            <p>{{ phone.description or 'No description available.' }}</p>
+                        </div>
+                        <div class="bn-content">
+                            <p>{{ phone.description_bn or phone.description or 'কোন বিবরণ নেই।' }}</p>
+                        </div>
+                    </section>
+                    
+                    <section class="phone-review mb-4">
+                        <h3 class="en-content">Detailed Review</h3>
+                        <h3 class="bn-content">বিস্তারিত পর্যালোচনা</h3>
+                        
+                        <div class="en-content">
+                            {{ phone.content|safe }}
+                        </div>
+                        <div class="bn-content">
+                            {{ phone.content_bn|safe or phone.content|safe }}
+                        </div>
+                    </section>
+                </article>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 20px;">
+                    <!-- Price Card -->
+                    <div class="card mb-4 shadow">
+                        <div class="card-header">
+                            <h4 class="my-0 en-content">Price</h4>
+                            <h4 class="my-0 bn-content">মূল্য</h4>
+                        </div>
+                        <div class="card-body">
+                            <h1 class="card-title pricing-card-title text-center">
+                                {% if phone.price %}
+                                ৳ {{ phone.price }}
+                                {% else %}
+                                <span class="en-content">TBA</span>
+                                <span class="bn-content">ঘোষণা করা হবে</span>
+                                {% endif %}
+                            </h1>
+                            {% if phone.price_note %}
+                            <small class="text-muted">
+                                <span class="en-content">{{ phone.price_note }}</span>
+                                <span class="bn-content">{{ phone.price_note_bn or phone.price_note }}</span>
+                            </small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Specifications Card -->
+                    <div class="card mb-4 shadow">
+                        <div class="card-header">
+                            <h4 class="my-0 en-content">Key Specifications</h4>
+                            <h4 class="my-0 bn-content">মূল স্পেসিফিকেশন</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table specs-table">
+                                <tbody>
+                                    {% if phone.display %}
+                                    <tr>
+                                        <th>
+                                            <span class="en-content">Display</span>
+                                            <span class="bn-content">ডিসপ্লে</span>
+                                        </th>
+                                        <td>{{ phone.display }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    
+                                    {% if phone.processor %}
+                                    <tr>
+                                        <th>
+                                            <span class="en-content">Processor</span>
+                                            <span class="bn-content">প্রসেসর</span>
+                                        </th>
+                                        <td>{{ phone.processor }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    
+                                    {% if phone.memory %}
+                                    <tr>
+                                        <th>
+                                            <span class="en-content">Memory</span>
+                                            <span class="bn-content">মেমোরি</span>
+                                        </th>
+                                        <td>{{ phone.memory }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    
+                                    {% if phone.camera %}
+                                    <tr>
+                                        <th>
+                                            <span class="en-content">Camera</span>
+                                            <span class="bn-content">ক্যামেরা</span>
+                                        </th>
+                                        <td>{{ phone.camera }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    
+                                    {% if phone.battery %}
+                                    <tr>
+                                        <th>
+                                            <span class="en-content">Battery</span>
+                                            <span class="bn-content">ব্যাটারি</span>
+                                        </th>
+                                        <td>{{ phone.battery }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    
+                                    {% if phone.os %}
+                                    <tr>
+                                        <th>
+                                            <span class="en-content">OS</span>
+                                            <span class="bn-content">অপারেটিং সিস্টেম</span>
+                                        </th>
+                                        <td>{{ phone.os }}</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Pros and Cons Card -->
+                    {% if phone.pros or phone.cons %}
+                    <div class="card mb-4 shadow">
+                        <div class="card-header">
+                            <h4 class="my-0 en-content">Pros & Cons</h4>
+                            <h4 class="my-0 bn-content">ভালো & খারাপ দিক</h4>
+                        </div>
+                        <div class="card-body">
+                            {% if phone.pros %}
+                            <h5 class="en-content text-success">Pros</h5>
+                            <h5 class="bn-content text-success">ভালো দিক</h5>
+                            <ul class="en-content">
+                                {% for pro in phone.pros.split(',') %}
+                                <li>{{ pro.strip() }}</li>
+                                {% endfor %}
+                            </ul>
+                            <ul class="bn-content">
+                                {% if phone.pros_bn %}
+                                    {% for pro in phone.pros_bn.split(',') %}
+                                    <li>{{ pro.strip() }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for pro in phone.pros.split(',') %}
+                                    <li>{{ pro.strip() }}</li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                            {% endif %}
+                            
+                            {% if phone.cons %}
+                            <h5 class="en-content text-danger">Cons</h5>
+                            <h5 class="bn-content text-danger">খারাপ দিক</h5>
+                            <ul class="en-content">
+                                {% for con in phone.cons.split(',') %}
+                                <li>{{ con.strip() }}</li>
+                                {% endfor %}
+                            </ul>
+                            <ul class="bn-content">
+                                {% if phone.cons_bn %}
+                                    {% for con in phone.cons_bn.split(',') %}
+                                    <li>{{ con.strip() }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    {% for con in phone.cons.split(',') %}
+                                    <li>{{ con.strip() }}</li>
+                                    {% endfor %}
+                                {% endif %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-center text-white py-4 mt-5">
+        <div class="container">
+            <p class="mb-0 en-content">© 2023 Mobile Review Hub. All rights reserved.</p>
+            <p class="mb-0 bn-content">© ২০২৩ মোবাইল রিভিউ হাব। সমস্ত অধিকার সংরক্ষিত।</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

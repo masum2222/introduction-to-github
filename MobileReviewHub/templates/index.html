@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Review Site</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts for Bengali -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <span class="en-content">Mobile Review Hub</span>
+                <span class="bn-content">মোবাইল রিভিউ হাব</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <span class="en-content">Home</span>
+                            <span class="bn-content">হোম</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin">
+                            <span class="en-content">Admin</span>
+                            <span class="bn-content">অ্যাডমিন</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <button id="langToggle" class="btn btn-outline-light ms-lg-2 lang-toggle">
+                            বাংলা
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="jumbotron p-4 mb-4 bg-dark rounded-3">
+                    <div class="container-fluid">
+                        <h1 class="display-5 en-title en-content">Welcome to Our Mobile Review Site</h1>
+                        <h1 class="display-5 bn-title bn-content">স্বাগতম আমাদের মোবাইল রিভিউ সাইটে</h1>
+                        
+                        <p class="lead en-content">
+                            Discover the latest smartphones with detailed reviews, specifications, and prices. Stay updated with upcoming releases and make informed decisions about your next mobile phone purchase.
+                        </p>
+                        <p class="lead bn-content">
+                            বিস্তারিত রিভিউ, স্পেসিফিকেশন এবং দাম সহ সর্বশেষ স্মার্টফোনগুলি আবিষ্কার করুন। আসন্ন রিলিজগুলির সাথে আপডেট থাকুন এবং আপনার পরবর্তী মোবাইল ফোন কেনার বিষয়ে অবহিত সিদ্ধান্ত নিন।
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="search-container">
+                    <div class="input-group">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search phones...">
+                        <button id="clearSearch" class="btn btn-outline-secondary" type="button">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="searchResults" class="search-results shadow-lg rounded d-none"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="phonesContainer">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="en-content">Latest Phone Reviews</h2>
+                    <h2 class="bn-content">সাম্প্রতিক ফোন রিভিউ</h2>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                {% for phone in phones %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card phone-card h-100">
+                        {% if 'upcoming' in phone.file_path %}
+                        <div class="upcoming-badge">
+                            <span class="badge bg-warning text-dark">
+                                <span class="en-content">Upcoming</span>
+                                <span class="bn-content">আসন্ন</span>
+                            </span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if phone.image %}
+                        <img src="{{ phone.image }}" class="card-img-top" alt="{{ phone.title }}">
+                        {% else %}
+                        <div class="text-center pt-4">
+                            <i class="fas fa-mobile-alt fa-5x text-muted"></i>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">
+                                <span class="en-content">{{ phone.title }}</span>
+                                <span class="bn-content">{{ phone.title_bn or phone.title }}</span>
+                            </h5>
+                            
+                            <div class="mb-2">
+                                <span class="badge bg-secondary">
+                                    <span class="en-content">{{ phone.brand }}</span>
+                                    <span class="bn-content">{{ phone.brand_bn or phone.brand }}</span>
+                                </span>
+                                {% if phone.rating %}
+                                <span class="ms-2 rating">
+                                    {% for i in range(phone.rating|int) %}
+                                    <i class="fas fa-star"></i>
+                                    {% endfor %}
+                                    {% if (phone.rating|float % 1) >= 0.5 %}
+                                    <i class="fas fa-star-half-alt"></i>
+                                    {% endif %}
+                                </span>
+                                {% endif %}
+                            </div>
+                            
+                            <p class="card-text">
+                                <span class="en-content">{{ phone.description[:100] }}{% if phone.description|length > 100 %}...{% endif %}</span>
+                                <span class="bn-content">{{ phone.description_bn[:100] if phone.description_bn else phone.description[:100] }}{% if (phone.description_bn or phone.description)|length > 100 %}...{% endif %}</span>
+                            </p>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="price-tag">
+                                        {% if phone.price %}
+                                        ৳ {{ phone.price }}
+                                        {% else %}
+                                        <span class="en-content">TBA</span>
+                                        <span class="bn-content">ঘোষণা করা হবে</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <a href="/phone/{{ phone.file_path }}" class="btn btn-primary">
+                                        <span class="en-content">Details</span>
+                                        <span class="bn-content">বিস্তারিত</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer text-muted">
+                            <small>
+                                <span class="en-content">Published: {{ phone.date }}</span>
+                                <span class="bn-content">প্রকাশিত: {{ phone.date }}</span>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-center text-white py-4 mt-5">
+        <div class="container">
+            <p class="mb-0 en-content">© 2023 Mobile Review Hub. All rights reserved.</p>
+            <p class="mb-0 bn-content">© ২০২৩ মোবাইল রিভিউ হাব। সমস্ত অধিকার সংরক্ষিত।</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/search.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

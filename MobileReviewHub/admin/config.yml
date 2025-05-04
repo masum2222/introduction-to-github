@@ -1,0 +1,38 @@
+backend:
+  name: git-gateway
+  branch: main # Branch to update (master by default)
+
+media_folder: "images" # Media files will be stored in the repo under images
+public_folder: "/images" # The src attribute for uploaded media
+
+collections:
+  - name: "phones" # Used in routes, e.g., /admin/collections/blog
+    label: "Phone Reviews" # Used in the UI
+    folder: "posts" # The path to the folder where the documents are stored
+    create: true # Allow users to create new documents in this collection
+    slug: "{{slug}}" # Filename template, e.g., YYYY-MM-DD-title.md
+    fields: # The fields for each document
+      - {label: "Title (English)", name: "title", widget: "string"}
+      - {label: "Title (Bengali)", name: "title_bn", widget: "string"}
+      - {label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD"}
+      - {label: "Brand (English)", name: "brand", widget: "string"}
+      - {label: "Brand (Bengali)", name: "brand_bn", widget: "string", required: false}
+      - {label: "Image", name: "image", widget: "string", required: false, hint: "Enter URL of product image"}
+      - {label: "Price (BDT)", name: "price", widget: "string", required: false}
+      - {label: "Price Note (English)", name: "price_note", widget: "string", required: false}
+      - {label: "Price Note (Bengali)", name: "price_note_bn", widget: "string", required: false}
+      - {label: "Rating", name: "rating", widget: "number", valueType: "float", min: 0, max: 5, step: 0.1, required: false}
+      - {label: "Description (English)", name: "description", widget: "text"}
+      - {label: "Description (Bengali)", name: "description_bn", widget: "text", required: false}
+      - {label: "Display", name: "display", widget: "string", required: false}
+      - {label: "Processor", name: "processor", widget: "string", required: false}
+      - {label: "Memory", name: "memory", widget: "string", required: false}
+      - {label: "Camera", name: "camera", widget: "string", required: false}
+      - {label: "Battery", name: "battery", widget: "string", required: false}
+      - {label: "OS", name: "os", widget: "string", required: false}
+      - {label: "Pros (English, comma separated)", name: "pros", widget: "string", required: false}
+      - {label: "Pros (Bengali, comma separated)", name: "pros_bn", widget: "string", required: false}
+      - {label: "Cons (English, comma separated)", name: "cons", widget: "string", required: false}
+      - {label: "Cons (Bengali, comma separated)", name: "cons_bn", widget: "string", required: false}
+      - {label: "Body (English)", name: "body", widget: "markdown"}
+      - {label: "Body (Bengali)", name: "body_bn", widget: "markdown", required: false}
